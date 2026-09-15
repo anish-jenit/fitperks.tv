@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitPerks TV</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="tv-shell">
+    <section class="setup-panel" aria-label="TV setup">
+      <p class="kicker">FitPerks TV</p>
+      <h1>Enter Code. Pick Game. Play.</h1>
+      <p class="subcopy">Use the 4-character code from your phone pairing flow, then launch the arcade game on this TV.</p>
+
+      <form id="launch-form" class="launch-form">
+        <label>FitPerks App URL</label>
+        <p class="fixed-url" aria-label="FitPerks app URL">Connected to https://fitperks.ai</p>
+        <input id="baseUrl" name="baseUrl" type="hidden" value="https://fitperks.ai" />
+
+        <label for="tvCode">TV Code</label>
+        <input id="tvCode" name="tvCode" type="text" inputmode="text" maxlength="4" placeholder="K7P4" autocomplete="off" required />
+
+        <label for="game">Arcade Game</label>
+        <select id="game" name="game">
+          <option value="dodge-runner">Dodge Runner (TV Mode)</option>
+          <option value="pose-wall">Pose Wall</option>
+        </select>
+
+        <div class="actions">
+          <button type="submit">Launch on TV</button>
+          <button type="button" id="clearBtn" class="ghost">Clear</button>
+        </div>
+      </form>
+
+      <ol class="steps" aria-label="How to play on TV">
+        <li>Open the FitPerks controller on phone.</li>
+        <li>Enter the same TV code there.</li>
+        <li>Keep phone below or in front of TV.</li>
+        <li>Calibrate using on-screen instruction and start.</li>
+      </ol>
+
+      <p id="status" class="status" role="status" aria-live="polite">Waiting for code and game selection.</p>
+    </section>
+
+    <section class="stage-panel" aria-label="Arcade stage">
+      <div class="stage-header">
+        <strong id="stageTitle">No game launched</strong>
+        <button type="button" id="fullscreenBtn" class="ghost">Fullscreen</button>
+      </div>
+      <iframe id="arcadeFrame" title="FitPerks Arcade TV" referrerpolicy="no-referrer" allow="autoplay; fullscreen" loading="eager"></iframe>
+    </section>
+  </main>
+
+  <script src="./script.js"></script>
+</body>
+</html>
