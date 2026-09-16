@@ -10,7 +10,19 @@ const fullscreenBtn = document.getElementById('fullscreenBtn')
 const calibrationCoach = document.getElementById('calibrationCoach')
 const coachTitle = document.getElementById('coachTitle')
 const coachPrompt = document.getElementById('coachPrompt')
+const coachAvatar = document.querySelector('.coach-runner-avatar')
 const FIXED_BASE_URL = 'https://fitperks.ai'
+
+if (coachAvatar instanceof HTMLImageElement) {
+  coachAvatar.addEventListener('error', () => {
+    const fallbackSrc = coachAvatar.dataset.fallbackSrc
+    if (fallbackSrc && coachAvatar.src !== fallbackSrc && !coachAvatar.dataset.fallbackAttempted) {
+      coachAvatar.dataset.fallbackAttempted = 'true'
+      coachAvatar.src = fallbackSrc
+    }
+  })
+}
+
 const TRUSTED_APP_ORIGINS = new Set([
   'https://fitperks.ai',
   'https://fitperks.org',
