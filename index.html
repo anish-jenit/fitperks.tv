@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-store" />
   <title>FitPerks TV</title>
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles.css?v=20260917-direct2" />
 </head>
 <body>
   <main class="tv-shell">
@@ -13,13 +14,13 @@
       <h1>Enter Code. Pick Game. Play.</h1>
       <p class="subcopy">Use the 4-character code from your phone pairing flow, then launch the arcade game on this TV.</p>
 
-      <form id="launch-form" class="launch-form">
+      <form id="launch-form" class="launch-form" action="https://fitperks.ai/tv" method="get">
         <label>FitPerks App URL</label>
         <p class="fixed-url" aria-label="FitPerks app URL">Connected to https://fitperks.ai</p>
         <input id="baseUrl" name="baseUrl" type="hidden" value="https://fitperks.ai" />
 
         <label for="tvCode">TV Code</label>
-        <input id="tvCode" name="tvCode" type="text" inputmode="text" maxlength="4" placeholder="K7P4" autocomplete="off" required />
+        <input id="tvCode" name="code" type="text" inputmode="text" maxlength="4" placeholder="K7P4" autocomplete="off" required />
 
         <label for="game">Arcade Game</label>
         <select id="game" name="game">
@@ -32,6 +33,11 @@
           <button type="button" id="clearBtn" class="ghost">Clear</button>
         </div>
       </form>
+
+      <p class="direct-launch" id="directLaunchWrap" hidden>
+        TV browser fallback:
+        <a id="directLaunchLink" href="https://fitperks.ai/tv">Open game link</a>
+      </p>
 
       <ol class="steps" aria-label="How to play on TV">
         <li>Open the FitPerks controller on phone.</li>
@@ -68,6 +74,6 @@
     </section>
   </main>
 
-  <script src="./script.js"></script>
+  <script src="./script.js?v=20260917-direct2"></script>
 </body>
 </html>

@@ -11,6 +11,8 @@ const calibrationCoach = document.getElementById('calibrationCoach')
 const coachTitle = document.getElementById('coachTitle')
 const coachPrompt = document.getElementById('coachPrompt')
 const coachAvatar = document.querySelector('.coach-runner-avatar')
+const directLaunchWrap = document.getElementById('directLaunchWrap')
+const directLaunchLink = document.getElementById('directLaunchLink')
 const FIXED_BASE_URL = 'https://fitperks.ai'
 
 if (coachAvatar instanceof HTMLImageElement) {
@@ -140,6 +142,26 @@ function buildTargetUrl(baseUrl, game, code) {
   return url.toString()
 }
 
+function updateDirectLaunchLink() {
+  const code = normalizeCode(tvCodeInput.value)
+  const game = gameSelect.value
+  const baseUrl = normalizeBaseUrl(FIXED_BASE_URL)
+  if (!baseUrl || code.length !== 4 || !(directLaunchLink instanceof HTMLAnchorElement)) {
+    if (directLaunchWrap) {
+      directLaunchWrap.hidden = true
+    }
+    return ''
+  }
+
+  const url = buildTargetUrl(baseUrl, game, code)
+  directLaunchLink.href = url
+  directLaunchLink.textContent = url
+  if (directLaunchWrap) {
+    directLaunchWrap.hidden = false
+  }
+  return url
+}
+
 function safeLocalStorageSet(key, value) {
   try {
     localStorage.setItem(key, value)
@@ -205,7 +227,15 @@ function launch() {
   safeLocalStorageSet('fitperks.tv.lastCode', code)
   safeLocalStorageSet('fitperks.tv.lastGame', game)
 
-  window.location.assign(url)
+  if (directLaunchLink instanceof HTMLAnchorElement) {
+    directLaunchLink.href = url
+    directLaunchLink.textContent = url
+  }
+  if (directLaunchWrap) {
+    directLaunchWrap.hidden = false
+  }
+
+  window.location.href = url
 }
 
 function restore() {
@@ -219,6 +249,7 @@ function restore() {
   if (savedGame === 'dodge-runner' || savedGame === 'pose-wall') {
     gameSelect.value = savedGame
   }
+  updateDirectLaunchLink()
 }
 
 form.addEventListener('submit', (event) => {
@@ -228,6 +259,11 @@ form.addEventListener('submit', (event) => {
 
 tvCodeInput.addEventListener('input', () => {
   tvCodeInput.value = normalizeCode(tvCodeInput.value)
+  updateDirectLaunchLink()
+})
+
+gameSelect.addEventListener('change', () => {
+  updateDirectLaunchLink()
 })
 
 clearBtn.addEventListener('click', () => {

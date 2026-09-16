@@ -149,6 +149,33 @@ button.ghost {
   font-weight: 700;
 }
 
+.direct-launch {
+  margin: 0;
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.7rem;
+  border: 1px solid rgba(103, 232, 249, 0.42);
+  border-radius: 12px;
+  background: rgba(15, 37, 63, 0.9);
+  color: var(--ink-strong);
+  font-weight: 800;
+}
+
+.direct-launch[hidden] {
+  display: none;
+}
+
+.direct-launch a {
+  display: block;
+  overflow-wrap: anywhere;
+  color: #02243d;
+  border: 1px solid var(--accent-strong);
+  border-radius: 10px;
+  padding: 0.7rem;
+  background: linear-gradient(180deg, var(--accent), var(--accent-strong));
+  text-decoration: none;
+}
+
 .stage-panel {
   position: relative;
   display: grid;
