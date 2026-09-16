@@ -18,6 +18,15 @@ const TRUSTED_APP_ORIGINS = new Set([
   'http://127.0.0.1:5173',
 ])
 
+function directionFromPrompt(prompt) {
+  const normalizedPrompt = String(prompt || '').toLowerCase()
+  if (normalizedPrompt.includes('left')) return 'left'
+  if (normalizedPrompt.includes('right')) return 'right'
+  if (normalizedPrompt.includes('front') || normalizedPrompt.includes('forward') || normalizedPrompt.includes('closer')) return 'front'
+  if (normalizedPrompt.includes('back')) return 'back'
+  return 'center'
+}
+
 function normalizeCode(value) {
   return value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 4)
 }
@@ -53,9 +62,10 @@ function buildTargetUrl(baseUrl, game, code) {
   return url.toString()
 }
 
-function showCalibrationCoach(title, prompt, isReady = false) {
+function showCalibrationCoach(title, prompt, isReady = false, direction = 'center') {
   calibrationCoach.hidden = false
   calibrationCoach.classList.toggle('ready', isReady)
+  calibrationCoach.dataset.direction = direction
   coachTitle.textContent = title
   coachPrompt.textContent = prompt
 }
@@ -63,6 +73,7 @@ function showCalibrationCoach(title, prompt, isReady = false) {
 function hideCalibrationCoach() {
   calibrationCoach.hidden = true
   calibrationCoach.classList.remove('ready')
+  calibrationCoach.dataset.direction = 'center'
   coachTitle.textContent = 'Pair phone, then stand in frame'
   coachPrompt.textContent = 'Move back, move front, move left, or move right until the hologram turns green.'
 }
@@ -91,6 +102,8 @@ function launch() {
   showCalibrationCoach(
     'Pair phone, then stand in frame',
     'After pairing, move back, move front, move left, or move right as prompted until calibration succeeds.',
+    false,
+    'center',
   )
 
   localStorage.setItem('fitperks.tv.lastCode', code)
@@ -155,13 +168,15 @@ window.addEventListener('message', (event) => {
     showCalibrationCoach(
       'Phone paired. Find the hologram.',
       'Stand where the phone camera can see your full body. Follow move back, move front, move left, or move right prompts.',
+      false,
+      'center',
     )
     statusEl.textContent = 'Phone paired. Calibrate in front of the TV.'
     return
   }
 
   if (message.status === 'ready') {
-    showCalibrationCoach('Calibration locked', 'Great. Starting automatically in 3, 2, 1.', true)
+    showCalibrationCoach('Calibration locked', 'Great. Starting automatically in 3, 2, 1.', true, 'center')
     statusEl.textContent = 'Calibration locked. Starting game.'
     window.setTimeout(hideCalibrationCoach, 1200)
     return
@@ -171,7 +186,8 @@ window.addEventListener('message', (event) => {
     const prompt = typeof message.prompt === 'string' && message.prompt.trim()
       ? message.prompt.trim()
       : 'Move back, move front, move left, or move right until calibration succeeds.'
-    showCalibrationCoach('Adjust your position', prompt)
+    const direction = typeof message.direction === 'string' ? message.direction : directionFromPrompt(prompt)
+    showCalibrationCoach('Adjust your position', prompt, false, direction)
     statusEl.textContent = prompt
   }
 })
