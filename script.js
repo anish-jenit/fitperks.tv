@@ -140,6 +140,22 @@ function buildTargetUrl(baseUrl, game, code) {
   return url.toString()
 }
 
+function safeLocalStorageSet(key, value) {
+  try {
+    localStorage.setItem(key, value)
+  } catch {
+    // Some TV browsers disable storage; launching should still work.
+  }
+}
+
+function safeLocalStorageGet(key) {
+  try {
+    return localStorage.getItem(key)
+  } catch {
+    return null
+  }
+}
+
 function showCalibrationCoach(title, prompt, isReady = false, direction = 'center') {
   if (appOwnsCalibration()) {
     hideCalibrationCoach()
@@ -181,27 +197,20 @@ function launch() {
   launchedGame = game
   const url = buildTargetUrl(baseUrl, game, code)
   lastCoachCue = ''
-  frame.src = url
+  frame.removeAttribute('src')
   stageTitle.textContent = `${game === 'dodge-runner' ? 'Dodge Runner' : 'Pose Wall'} - Code ${code}`
-  statusEl.textContent = `Launched. Pair phone with code ${code}, then follow TV movement prompts until calibration locks.`
-  if (appOwnsCalibration()) {
-    hideCalibrationCoach()
-  } else {
-    showCalibrationCoach(
-      'Pair phone, then stand in frame',
-      'After pairing, move back, move front, move left, or move right as prompted until calibration succeeds.',
-      false,
-      'center',
-    )
-  }
+  statusEl.textContent = `Opening ${game === 'dodge-runner' ? 'Dodge Runner' : 'Pose Wall'} directly on this TV...`
+  hideCalibrationCoach()
 
-  localStorage.setItem('fitperks.tv.lastCode', code)
-  localStorage.setItem('fitperks.tv.lastGame', game)
+  safeLocalStorageSet('fitperks.tv.lastCode', code)
+  safeLocalStorageSet('fitperks.tv.lastGame', game)
+
+  window.location.assign(url)
 }
 
 function restore() {
-  const savedCode = localStorage.getItem('fitperks.tv.lastCode')
-  const savedGame = localStorage.getItem('fitperks.tv.lastGame')
+  const savedCode = safeLocalStorageGet('fitperks.tv.lastCode')
+  const savedGame = safeLocalStorageGet('fitperks.tv.lastGame')
 
   baseUrlInput.value = FIXED_BASE_URL
   if (savedCode) {
