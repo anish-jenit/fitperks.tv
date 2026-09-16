@@ -30,6 +30,65 @@ const TRUSTED_APP_ORIGINS = new Set([
   'http://127.0.0.1:5173',
 ])
 
+let lastCoachCue = ''
+
+function playCoachCue(cue) {
+  const AudioCtor = window.AudioContext || window.webkitAudioContext
+  if (!AudioCtor) {
+    return
+  }
+
+  const context = new AudioCtor()
+  const gain = context.createGain()
+  const now = context.currentTime
+  const notes = cue === 'ready'
+    ? [
+        { frequency: 523.25, start: 0, duration: 0.11 },
+        { frequency: 659.25, start: 0.13, duration: 0.16 },
+      ]
+    : [
+        { frequency: 392, start: 0, duration: 0.13 },
+        { frequency: 261.63, start: 0.15, duration: 0.22 },
+      ]
+  const endAt = notes.reduce((end, note) => Math.max(end, note.start + note.duration), 0)
+
+  gain.gain.setValueAtTime(0.0001, now)
+  gain.gain.exponentialRampToValueAtTime(cue === 'ready' ? 0.11 : 0.09, now + 0.02)
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + endAt + 0.12)
+  gain.connect(context.destination)
+
+  notes.forEach((note, index) => {
+    const oscillator = context.createOscillator()
+    const noteGain = context.createGain()
+    const startAt = now + note.start
+    const stopAt = startAt + note.duration
+    oscillator.type = cue === 'ready' ? (index === 0 ? 'sine' : 'triangle') : 'sawtooth'
+    oscillator.frequency.setValueAtTime(note.frequency, startAt)
+    noteGain.gain.setValueAtTime(0.0001, startAt)
+    noteGain.gain.exponentialRampToValueAtTime(0.62, startAt + 0.015)
+    noteGain.gain.exponentialRampToValueAtTime(0.0001, stopAt)
+    oscillator.connect(noteGain)
+    noteGain.connect(gain)
+    oscillator.start(startAt)
+    oscillator.stop(stopAt + 0.02)
+  })
+
+  context.resume().catch(() => undefined)
+  window.setTimeout(() => {
+    gain.disconnect()
+    context.close()
+  }, (endAt + 0.28) * 1000)
+}
+
+function playCoachCueOnce(cue) {
+  if (lastCoachCue === cue) {
+    return
+  }
+
+  lastCoachCue = cue
+  playCoachCue(cue)
+}
+
 function directionFromPrompt(prompt) {
   const normalizedPrompt = String(prompt || '').toLowerCase()
   if (normalizedPrompt.includes('left')) return 'left'
@@ -108,6 +167,7 @@ function launch() {
 
   const game = gameSelect.value
   const url = buildTargetUrl(baseUrl, game, code)
+  lastCoachCue = ''
   frame.src = url
   stageTitle.textContent = `${game === 'dodge-runner' ? 'Dodge Runner' : 'Pose Wall'} - Code ${code}`
   statusEl.textContent = `Launched. Pair phone with code ${code}, then follow TV movement prompts until calibration locks.`
@@ -145,6 +205,7 @@ tvCodeInput.addEventListener('input', () => {
 })
 
 clearBtn.addEventListener('click', () => {
+  lastCoachCue = ''
   tvCodeInput.value = ''
   frame.removeAttribute('src')
   stageTitle.textContent = 'No game launched'
@@ -177,6 +238,7 @@ window.addEventListener('message', (event) => {
   }
 
   if (message.status === 'waiting' || message.status === 'idle') {
+    lastCoachCue = ''
     const prompt = typeof message.prompt === 'string' && message.prompt.trim()
       ? message.prompt.trim()
       : 'Open the phone controller and enter this TV code.'
@@ -186,6 +248,7 @@ window.addEventListener('message', (event) => {
   }
 
   if (message.status === 'paired') {
+    lastCoachCue = ''
     showCalibrationCoach(
       'Phone paired. Find the hologram.',
       'Stand where the phone camera can see your full body. Follow move back, move front, move left, or move right prompts.',
@@ -196,7 +259,19 @@ window.addEventListener('message', (event) => {
     return
   }
 
+  if (message.status === 'disconnected') {
+    const prompt = typeof message.prompt === 'string' && message.prompt.trim()
+      ? message.prompt.trim()
+      : 'Tracking paused. Reconnect, then recalibrate.'
+    const direction = typeof message.direction === 'string' ? message.direction : directionFromPrompt(prompt)
+    playCoachCueOnce('disconnected')
+    showCalibrationCoach('Tracking paused', prompt, false, direction)
+    statusEl.textContent = prompt
+    return
+  }
+
   if (message.status === 'ready') {
+    playCoachCueOnce('ready')
     showCalibrationCoach('Calibration locked', 'Great. Starting automatically in 3, 2, 1.', true, 'center')
     statusEl.textContent = 'Calibration locked. Starting game.'
     window.setTimeout(hideCalibrationCoach, 1200)
@@ -204,6 +279,7 @@ window.addEventListener('message', (event) => {
   }
 
   if (message.status === 'prompt') {
+    lastCoachCue = ''
     const prompt = typeof message.prompt === 'string' && message.prompt.trim()
       ? message.prompt.trim()
       : 'Move back, move front, move left, or move right until calibration succeeds.'
