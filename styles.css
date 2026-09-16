@@ -187,7 +187,7 @@ button.ghost {
   gap: clamp(0.7rem, 1.6vw, 1.15rem);
   padding: clamp(1rem, 3vw, 2rem);
   color: var(--ink-strong);
-  background: radial-gradient(circle at 50% 42%, rgba(34, 211, 238, 0.16), rgba(2, 6, 23, 0.18) 48%, rgba(2, 6, 23, 0.46));
+  background: radial-gradient(circle at 50% 42%, rgba(34, 211, 238, 0.22), rgba(2, 6, 23, 0.24) 48%, rgba(2, 6, 23, 0.58));
   pointer-events: none;
 }
 
@@ -198,20 +198,20 @@ button.ghost {
 .coach-hologram {
   position: relative;
   z-index: 1;
-  width: min(18vw, 13rem);
-  min-width: 7.5rem;
+  width: min(34vw, 24rem);
+  min-width: 15rem;
   aspect-ratio: 0.48;
-  border: 3px dashed rgba(103, 232, 249, 0.76);
+  border: 5px dashed rgba(103, 232, 249, 0.94);
   border-radius: 999px 999px 30px 30px;
-  background: linear-gradient(180deg, rgba(34, 211, 238, 0.18), rgba(103, 232, 249, 0.04));
-  box-shadow: 0 0 38px rgba(34, 211, 238, 0.32), inset 0 0 34px rgba(103, 232, 249, 0.16);
+  background: linear-gradient(180deg, rgba(34, 211, 238, 0.25), rgba(103, 232, 249, 0.08));
+  box-shadow: 0 0 54px rgba(34, 211, 238, 0.52), inset 0 0 48px rgba(103, 232, 249, 0.24);
 }
 
 .coach-hologram span {
   position: absolute;
   display: block;
-  background: rgba(216, 230, 248, 0.8);
-  box-shadow: 0 0 18px rgba(103, 232, 249, 0.65);
+  background: rgba(216, 230, 248, 0.96);
+  box-shadow: 0 0 24px rgba(103, 232, 249, 0.86);
 }
 
 .coach-head {

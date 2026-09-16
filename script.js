@@ -164,6 +164,15 @@ window.addEventListener('message', (event) => {
     return
   }
 
+  if (message.status === 'waiting' || message.status === 'idle') {
+    const prompt = typeof message.prompt === 'string' && message.prompt.trim()
+      ? message.prompt.trim()
+      : 'Open the phone controller and enter this TV code.'
+    showCalibrationCoach('Waiting for phone camera', prompt, false, 'center')
+    statusEl.textContent = prompt
+    return
+  }
+
   if (message.status === 'paired') {
     showCalibrationCoach(
       'Phone paired. Find the hologram.',
