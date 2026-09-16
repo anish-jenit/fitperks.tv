@@ -14,6 +14,7 @@ const coachAvatar = document.querySelector('.coach-runner-avatar')
 const directLaunchWrap = document.getElementById('directLaunchWrap')
 const directLaunchLink = document.getElementById('directLaunchLink')
 const FIXED_BASE_URL = 'https://fitperks.ai'
+const DEBUG_MODE = new URLSearchParams(window.location.search).get('debug') === '1'
 
 if (coachAvatar instanceof HTMLImageElement) {
   coachAvatar.addEventListener('error', () => {
@@ -133,12 +134,18 @@ function buildTargetUrl(baseUrl, game, code) {
   if (game === 'dodge-runner') {
     const url = new URL('/tv', baseUrl)
     url.searchParams.set('code', code)
+    if (DEBUG_MODE) {
+      url.searchParams.set('debug', '1')
+    }
     return url.toString()
   }
 
   const url = new URL('/play/pose-wall', baseUrl)
   url.searchParams.set('tv', '1')
   url.searchParams.set('code', code)
+  if (DEBUG_MODE) {
+    url.searchParams.set('debug', '1')
+  }
   return url.toString()
 }
 
@@ -222,6 +229,9 @@ function launch() {
   frame.removeAttribute('src')
   stageTitle.textContent = `${game === 'dodge-runner' ? 'Dodge Runner' : 'Pose Wall'} - Code ${code}`
   statusEl.textContent = `Opening ${game === 'dodge-runner' ? 'Dodge Runner' : 'Pose Wall'} directly on this TV...`
+  if (DEBUG_MODE) {
+    statusEl.textContent += ' Debug mode is enabled.'
+  }
   hideCalibrationCoach()
 
   safeLocalStorageSet('fitperks.tv.lastCode', code)
