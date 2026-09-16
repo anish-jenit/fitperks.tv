@@ -33,6 +33,11 @@ const TRUSTED_APP_ORIGINS = new Set([
 ])
 
 let lastCoachCue = ''
+let launchedGame = ''
+
+function appOwnsCalibration() {
+  return launchedGame === 'dodge-runner'
+}
 
 function playCoachCue(cue) {
   const AudioCtor = window.AudioContext || window.webkitAudioContext
@@ -136,6 +141,11 @@ function buildTargetUrl(baseUrl, game, code) {
 }
 
 function showCalibrationCoach(title, prompt, isReady = false, direction = 'center') {
+  if (appOwnsCalibration()) {
+    hideCalibrationCoach()
+    return
+  }
+
   calibrationCoach.hidden = false
   calibrationCoach.classList.toggle('ready', isReady)
   calibrationCoach.dataset.direction = direction
@@ -168,17 +178,22 @@ function launch() {
   }
 
   const game = gameSelect.value
+  launchedGame = game
   const url = buildTargetUrl(baseUrl, game, code)
   lastCoachCue = ''
   frame.src = url
   stageTitle.textContent = `${game === 'dodge-runner' ? 'Dodge Runner' : 'Pose Wall'} - Code ${code}`
   statusEl.textContent = `Launched. Pair phone with code ${code}, then follow TV movement prompts until calibration locks.`
-  showCalibrationCoach(
-    'Pair phone, then stand in frame',
-    'After pairing, move back, move front, move left, or move right as prompted until calibration succeeds.',
-    false,
-    'center',
-  )
+  if (appOwnsCalibration()) {
+    hideCalibrationCoach()
+  } else {
+    showCalibrationCoach(
+      'Pair phone, then stand in frame',
+      'After pairing, move back, move front, move left, or move right as prompted until calibration succeeds.',
+      false,
+      'center',
+    )
+  }
 
   localStorage.setItem('fitperks.tv.lastCode', code)
   localStorage.setItem('fitperks.tv.lastGame', game)
@@ -209,6 +224,7 @@ tvCodeInput.addEventListener('input', () => {
 clearBtn.addEventListener('click', () => {
   lastCoachCue = ''
   tvCodeInput.value = ''
+  launchedGame = ''
   frame.removeAttribute('src')
   stageTitle.textContent = 'No game launched'
   statusEl.textContent = 'Cleared. Enter a code to launch again.'
