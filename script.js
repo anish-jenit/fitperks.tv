@@ -25,7 +25,9 @@ if (coachAvatar instanceof HTMLImageElement) {
 
 const TRUSTED_APP_ORIGINS = new Set([
   'https://fitperks.ai',
+  'https://www.fitperks.ai',
   'https://fitperks.org',
+  'https://www.fitperks.org',
   'http://localhost:5173',
   'http://127.0.0.1:5173',
 ])
