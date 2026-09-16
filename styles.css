@@ -198,72 +198,59 @@ button.ghost {
 .coach-hologram {
   position: relative;
   z-index: 1;
-  width: min(34vw, 24rem);
+  width: min(44vw, 24rem);
   min-width: 15rem;
-  aspect-ratio: 0.48;
-  border: 5px dashed rgba(103, 232, 249, 0.94);
-  border-radius: 999px 999px 30px 30px;
-  background: linear-gradient(180deg, rgba(34, 211, 238, 0.25), rgba(103, 232, 249, 0.08));
-  box-shadow: 0 0 54px rgba(34, 211, 238, 0.52), inset 0 0 48px rgba(103, 232, 249, 0.24);
-}
-
-.coach-hologram span {
-  position: absolute;
-  display: block;
-  background: rgba(216, 230, 248, 0.96);
-  box-shadow: 0 0 24px rgba(103, 232, 249, 0.86);
-}
-
-.coach-head {
-  top: 9%;
-  left: 50%;
-  width: 23%;
   aspect-ratio: 1;
-  border-radius: 50%;
-  transform: translateX(-50%);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 50% 54%, rgba(103, 232, 249, 0.22), rgba(34, 211, 238, 0.08) 50%, transparent 70%),
+    linear-gradient(90deg, transparent 0 10%, rgba(103, 232, 249, 0.1) 10% 11%, transparent 11% 89%, rgba(103, 232, 249, 0.1) 89% 90%, transparent 90% 100%);
+  filter: drop-shadow(0 0 26px rgba(34, 211, 238, 0.62));
+  animation: coach-hologram-idle 1700ms ease-in-out infinite alternate;
 }
 
-.coach-body {
-  top: 27%;
+.coach-hologram::before {
+  position: absolute;
+  inset: 3% 19% 5%;
+  content: "";
+  border: 4px solid rgba(103, 232, 249, 0.72);
+  border-radius: 42% 42% 28% 28%;
+  background:
+    linear-gradient(180deg, rgba(34, 211, 238, 0.14), rgba(34, 211, 238, 0.02)),
+    repeating-linear-gradient(0deg, rgba(224, 242, 254, 0.16) 0 2px, transparent 2px 19px);
+  box-shadow: inset 0 0 50px rgba(103, 232, 249, 0.16), 0 0 38px rgba(34, 211, 238, 0.34);
+  opacity: 0.9;
+}
+
+.coach-hologram::after {
+  position: absolute;
   left: 50%;
-  width: 7%;
-  height: 33%;
-  border-radius: 999px;
+  bottom: 6%;
+  width: 58%;
+  height: 8%;
+  content: "";
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(103, 232, 249, 0.58), transparent 68%);
   transform: translateX(-50%);
 }
 
-.coach-arm {
-  top: 36%;
-  width: 34%;
-  height: 5%;
-  border-radius: 999px;
-}
-
-.coach-arm.left {
-  left: 14%;
-  transform: rotate(-26deg);
-}
-
-.coach-arm.right {
-  right: 14%;
-  transform: rotate(26deg);
-}
-
-.coach-leg {
-  top: 58%;
-  width: 32%;
-  height: 5%;
-  border-radius: 999px;
-}
-
-.coach-leg.left {
-  left: 21%;
-  transform: rotate(64deg);
-}
-
-.coach-leg.right {
-  right: 21%;
-  transform: rotate(-64deg);
+.coach-runner-avatar {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  z-index: 2;
+  width: 82%;
+  height: 82%;
+  display: block;
+  object-fit: contain;
+  object-position: center bottom;
+  opacity: 0.92;
+  filter:
+    drop-shadow(0 0 18px rgba(34, 211, 238, 0.86))
+    drop-shadow(0 0 36px rgba(103, 232, 249, 0.5))
+    saturate(1.14);
+  transform: translateX(-50%);
+  animation: coach-runner-scan 1350ms ease-in-out infinite alternate;
 }
 
 .coach-copy {
@@ -371,18 +358,73 @@ button.ghost {
 }
 
 .calibration-coach.ready .coach-hologram {
-  border-color: rgba(134, 239, 172, 0.92);
-  background: linear-gradient(180deg, rgba(34, 197, 94, 0.26), rgba(134, 239, 172, 0.08));
-  box-shadow: 0 0 42px rgba(34, 197, 94, 0.5), inset 0 0 38px rgba(134, 239, 172, 0.18);
+  background:
+    radial-gradient(circle at 50% 54%, rgba(134, 239, 172, 0.26), rgba(34, 197, 94, 0.1) 48%, transparent 70%),
+    linear-gradient(90deg, transparent 0 10%, rgba(134, 239, 172, 0.14) 10% 11%, transparent 11% 89%, rgba(134, 239, 172, 0.14) 89% 90%, transparent 90% 100%);
+  filter: drop-shadow(0 0 30px rgba(34, 197, 94, 0.72));
+  animation: coach-calibration-lock 1100ms ease-in-out infinite alternate;
 }
 
-.calibration-coach.ready .coach-hologram span {
-  background: rgba(220, 252, 231, 0.92);
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.72);
+.calibration-coach.ready .coach-hologram::before {
+  border-color: rgba(134, 239, 172, 0.7);
+  background:
+    linear-gradient(180deg, rgba(34, 197, 94, 0.18), rgba(34, 197, 94, 0.05)),
+    repeating-linear-gradient(0deg, rgba(220, 252, 231, 0.2) 0 2px, transparent 2px 19px);
+  box-shadow: inset 0 0 46px rgba(134, 239, 172, 0.16), 0 0 40px rgba(34, 197, 94, 0.32);
+}
+
+.calibration-coach.ready .coach-runner-avatar {
+  opacity: 1;
+  filter:
+    drop-shadow(0 0 20px rgba(134, 239, 172, 0.94))
+    drop-shadow(0 0 48px rgba(34, 197, 94, 0.58))
+    saturate(1.18);
+  animation: coach-runner-lock 760ms ease-out both;
 }
 
 .calibration-coach.ready .coach-copy {
   border-color: rgba(134, 239, 172, 0.56);
+}
+
+@keyframes coach-hologram-idle {
+  from {
+    transform: translateY(0) scale(0.992);
+  }
+  to {
+    transform: translateY(-0.35rem) scale(1.008);
+  }
+}
+
+@keyframes coach-runner-scan {
+  from {
+    opacity: 0.78;
+    transform: translateX(-50%) scale(0.985);
+  }
+  to {
+    opacity: 0.96;
+    transform: translateX(-50%) scale(1.012);
+  }
+}
+
+@keyframes coach-runner-lock {
+  0% {
+    transform: translateX(-50%) scale(0.96);
+  }
+  48% {
+    transform: translateX(-50%) scale(1.08);
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+@keyframes coach-calibration-lock {
+  from {
+    transform: translateY(-0.18rem) scale(0.985);
+  }
+  to {
+    transform: translateY(-0.18rem) scale(1.015);
+  }
 }
 
 @keyframes coach-direction-pulse {
