@@ -134,6 +134,60 @@ button.ghost {
   background: rgba(15, 37, 63, 0.9);
 }
 
+.debug-shortcuts {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.65rem;
+  border: 1px solid rgba(103, 232, 249, 0.34);
+  border-radius: 12px;
+  background: rgba(15, 37, 63, 0.82);
+}
+
+.debug-shortcuts > span {
+  color: var(--warn);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.debug-shortcuts > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.debug-shortcuts a {
+  display: grid;
+  gap: 0.08rem;
+  min-height: 3rem;
+  align-content: center;
+  justify-items: center;
+  border: 1px solid var(--accent-strong);
+  border-radius: 10px;
+  color: #02243d;
+  text-decoration: none;
+  background: linear-gradient(180deg, var(--accent), var(--accent-strong));
+}
+
+.debug-shortcuts a:focus,
+.debug-shortcuts a:hover {
+  outline: 3px solid rgba(253, 230, 138, 0.9);
+  outline-offset: 2px;
+}
+
+.debug-shortcuts strong {
+  font-size: 0.8rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.debug-shortcuts small {
+  color: #06253a;
+  font-size: 0.68rem;
+  font-weight: 850;
+}
+
 .steps {
   margin: 0;
   padding-left: 1.1rem;

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Cache-Control" content="no-store" />
   <title>FitPerks TV</title>
-  <link rel="stylesheet" href="./styles.css?v=20260917-debug1" />
+  <link rel="stylesheet" href="./styles.css?v=20260918-debug-links1" />
 </head>
 <body>
   <main class="tv-shell">
@@ -33,6 +33,24 @@
           <button type="button" id="clearBtn" class="ghost">Clear</button>
         </div>
       </form>
+
+      <div class="debug-shortcuts" aria-label="TV browser debug links">
+        <span>TV browser tests</span>
+        <div>
+          <a id="debugCanvasLink" href="https://fitperks.ai/tv?tvdebug=1&renderer=canvas">
+            <strong>Debug 1</strong>
+            <small>Canvas</small>
+          </a>
+          <a id="debugWebglLink" href="https://fitperks.ai/tv?tvdebug=1&renderer=webgl">
+            <strong>Debug 2</strong>
+            <small>WebGL</small>
+          </a>
+          <a id="debugMinimalLink" href="https://fitperks.ai/tv?tvtest=1&renderer=canvas">
+            <strong>Debug 3</strong>
+            <small>Minimal</small>
+          </a>
+        </div>
+      </div>
 
       <p class="direct-launch" id="directLaunchWrap" hidden>
         TV browser fallback:
@@ -74,6 +92,6 @@
     </section>
   </main>
 
-  <script src="./script.js?v=20260917-debug1"></script>
+  <script src="./script.js?v=20260918-debug-links1"></script>
 </body>
 </html>

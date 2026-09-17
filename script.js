@@ -13,6 +13,9 @@ const coachPrompt = document.getElementById('coachPrompt')
 const coachAvatar = document.querySelector('.coach-runner-avatar')
 const directLaunchWrap = document.getElementById('directLaunchWrap')
 const directLaunchLink = document.getElementById('directLaunchLink')
+const debugCanvasLink = document.getElementById('debugCanvasLink')
+const debugWebglLink = document.getElementById('debugWebglLink')
+const debugMinimalLink = document.getElementById('debugMinimalLink')
 const FIXED_BASE_URL = 'https://fitperks.ai'
 const DEBUG_MODE = new URLSearchParams(window.location.search).get('debug') === '1'
 
@@ -149,10 +152,42 @@ function buildTargetUrl(baseUrl, game, code) {
   return url.toString()
 }
 
+function buildDodgeDebugUrl(baseUrl, code, params) {
+  const url = new URL('/tv', baseUrl)
+  if (code.length === 4) {
+    url.searchParams.set('code', code)
+  }
+  Object.entries(params).forEach(([key, value]) => {
+    url.searchParams.set(key, value)
+  })
+  return url.toString()
+}
+
+function updateDebugLinks() {
+  const code = normalizeCode(tvCodeInput.value)
+  const baseUrl = normalizeBaseUrl(FIXED_BASE_URL)
+  if (!baseUrl) {
+    return
+  }
+
+  const links = [
+    [debugCanvasLink, { tvdebug: '1', renderer: 'canvas' }],
+    [debugWebglLink, { tvdebug: '1', renderer: 'webgl' }],
+    [debugMinimalLink, { tvtest: '1', renderer: 'canvas' }],
+  ]
+
+  links.forEach(([link, params]) => {
+    if (link instanceof HTMLAnchorElement) {
+      link.href = buildDodgeDebugUrl(baseUrl, code, params)
+    }
+  })
+}
+
 function updateDirectLaunchLink() {
   const code = normalizeCode(tvCodeInput.value)
   const game = gameSelect.value
   const baseUrl = normalizeBaseUrl(FIXED_BASE_URL)
+  updateDebugLinks()
   if (!baseUrl || code.length !== 4 || !(directLaunchLink instanceof HTMLAnchorElement)) {
     if (directLaunchWrap) {
       directLaunchWrap.hidden = true
@@ -259,6 +294,7 @@ function restore() {
   if (savedGame === 'dodge-runner' || savedGame === 'pose-wall') {
     gameSelect.value = savedGame
   }
+  updateDebugLinks()
   updateDirectLaunchLink()
 }
 
