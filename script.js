@@ -13,6 +13,7 @@ const coachPrompt = document.getElementById('coachPrompt')
 const coachAvatar = document.querySelector('.coach-runner-avatar')
 const directLaunchWrap = document.getElementById('directLaunchWrap')
 const directLaunchLink = document.getElementById('directLaunchLink')
+const debugShortcuts = document.getElementById('debugShortcuts')
 const debugCanvasLink = document.getElementById('debugCanvasLink')
 const debugWebglLink = document.getElementById('debugWebglLink')
 const debugMinimalLink = document.getElementById('debugMinimalLink')
@@ -21,8 +22,13 @@ const debugViewerLink = document.getElementById('debugViewerLink')
 const debugProbeLink = document.getElementById('debugProbeLink')
 const FIXED_BASE_URL = 'https://fitperks.ai'
 const INITIAL_SEARCH_PARAMS = new URLSearchParams(window.location.search)
-const DEBUG_MODE = INITIAL_SEARCH_PARAMS.get('debug') === '1'
-const PROBE_MODE = INITIAL_SEARCH_PARAMS.get('probe') === '1'
+const DEBUG_TOOLS_MODE = INITIAL_SEARCH_PARAMS.get('tools') === '1'
+const DEBUG_MODE = DEBUG_TOOLS_MODE && INITIAL_SEARCH_PARAMS.get('debug') === '1'
+const PROBE_MODE = DEBUG_TOOLS_MODE && INITIAL_SEARCH_PARAMS.get('probe') === '1'
+
+if (debugShortcuts) {
+  debugShortcuts.hidden = !DEBUG_TOOLS_MODE
+}
 
 if (coachAvatar instanceof HTMLImageElement) {
   coachAvatar.addEventListener('error', () => {
@@ -171,6 +177,7 @@ function buildDodgeDebugUrl(baseUrl, code, params) {
 function buildProbeUrl(code) {
   const url = new URL(window.location.href)
   url.search = ''
+  url.searchParams.set('tools', '1')
   url.searchParams.set('probe', '1')
   if (code.length === 4) {
     url.searchParams.set('code', code)
@@ -179,6 +186,10 @@ function buildProbeUrl(code) {
 }
 
 function updateDebugLinks() {
+  if (!DEBUG_TOOLS_MODE) {
+    return
+  }
+
   const code = normalizeCode(tvCodeInput.value)
   const baseUrl = normalizeBaseUrl(FIXED_BASE_URL)
   if (!baseUrl) {
