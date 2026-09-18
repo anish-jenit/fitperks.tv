@@ -143,6 +143,10 @@ button.ghost {
   background: rgba(15, 37, 63, 0.82);
 }
 
+.debug-shortcuts[hidden] {
+  display: none !important;
+}
+
 .debug-shortcuts > span {
   color: var(--warn);
   font-size: 0.78rem;
