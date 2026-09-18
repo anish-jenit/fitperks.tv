@@ -16,6 +16,8 @@ const directLaunchLink = document.getElementById('directLaunchLink')
 const debugCanvasLink = document.getElementById('debugCanvasLink')
 const debugWebglLink = document.getElementById('debugWebglLink')
 const debugMinimalLink = document.getElementById('debugMinimalLink')
+const debugAvatarLink = document.getElementById('debugAvatarLink')
+const debugViewerLink = document.getElementById('debugViewerLink')
 const FIXED_BASE_URL = 'https://fitperks.ai'
 const DEBUG_MODE = new URLSearchParams(window.location.search).get('debug') === '1'
 
@@ -174,6 +176,8 @@ function updateDebugLinks() {
     [debugCanvasLink, { tvdebug: '1', renderer: 'canvas' }],
     [debugWebglLink, { tvdebug: '1', renderer: 'webgl' }],
     [debugMinimalLink, { tvtest: '1', renderer: 'canvas' }],
+    [debugAvatarLink, { tvdebug: '1', renderer: 'canvas', avatar: 'test' }],
+    [debugViewerLink, { debug: 'viewer' }],
   ]
 
   links.forEach(([link, params]) => {
