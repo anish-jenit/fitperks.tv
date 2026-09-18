@@ -5,110 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Cache-Control" content="no-store" />
   <title>FitPerks TV</title>
-  <link rel="stylesheet" href="./styles.css?v=20260918-phone-controller1" />
+  <link rel="stylesheet" href="./styles.css?v=20260918-clean-tv1" />
 </head>
 <body>
   <main class="tv-shell">
-    <section class="setup-panel" aria-label="TV setup">
-      <p class="kicker">FitPerks TV</p>
-      <h1>Enter Code. Pick Game. Play.</h1>
-      <p class="subcopy">Use the 4-character code from your phone pairing flow, then launch the arcade game on this TV.</p>
+    <header class="tv-header">
+      <a class="brand" href="./" aria-label="FitPerks TV home">FitPerks TV</a>
+      <button type="button" id="homeBtn" class="ghost" hidden>Home</button>
+    </header>
 
-      <form id="launch-form" class="launch-form" action="https://fitperks.ai/tv" method="get">
-        <label>FitPerks App URL</label>
-        <p class="fixed-url" aria-label="FitPerks app URL">Connected to https://fitperks.ai</p>
+    <section id="setupView" class="setup-view" aria-label="TV setup">
+      <form id="launch-form" class="setup-card" action="https://fitperks.ai/tv" method="get">
+        <p class="kicker">Motion Arcade</p>
+        <h1>Enter Game ID</h1>
+        <p class="subcopy">Open FitPerks on your phone, create or join an arcade TV session, then enter the 4-character game ID shown there.</p>
+
         <input id="baseUrl" name="baseUrl" type="hidden" value="https://fitperks.ai" />
+        <input id="game" name="game" type="hidden" value="dodge-runner" />
 
-        <label for="tvCode">TV Code</label>
+        <label for="tvCode">Game ID</label>
         <input id="tvCode" name="code" type="text" inputmode="text" maxlength="4" placeholder="K7P4" autocomplete="off" required />
 
-        <label for="game">Arcade Game</label>
-        <select id="game" name="game">
-          <option value="dodge-runner">Dodge Runner (TV Mode)</option>
-          <option value="pose-wall">Pose Wall</option>
-        </select>
+        <button type="submit">Play Game on TV</button>
 
-        <div class="actions">
-          <button type="submit">Open Game on TV</button>
-          <button type="button" id="clearBtn" class="ghost">Clear</button>
-        </div>
+        <ol class="steps" aria-label="Next steps">
+          <li>Keep the phone camera pointed at the player.</li>
+          <li>Enable camera on the phone controller.</li>
+          <li>Follow the calibration prompts on this TV.</li>
+        </ol>
+
+        <p id="status" class="status" role="status" aria-live="polite">Waiting for Game ID.</p>
       </form>
-
-      <div id="debugShortcuts" class="debug-shortcuts" aria-label="TV browser debug links" hidden>
-        <span>TV browser tests</span>
-        <div>
-          <a id="debugCanvasLink" href="https://fitperks.ai/tv?tvdebug=1&renderer=canvas">
-            <strong>Debug 1</strong>
-            <small>Canvas</small>
-          </a>
-          <a id="debugWebglLink" href="https://fitperks.ai/tv?tvdebug=1&renderer=webgl">
-            <strong>Debug 2</strong>
-            <small>WebGL</small>
-          </a>
-          <a id="debugMinimalLink" href="https://fitperks.ai/tv?tvtest=1&renderer=canvas">
-            <strong>Debug 3</strong>
-            <small>Minimal</small>
-          </a>
-          <a id="debugAvatarLink" href="https://fitperks.ai/tv?tvdebug=1&renderer=canvas&avatar=test">
-            <strong>Debug 4</strong>
-            <small>Test PNG</small>
-          </a>
-          <a id="debugViewerLink" href="https://fitperks.ai/tv?debug=viewer">
-            <strong>Logs</strong>
-            <small>Viewer</small>
-          </a>
-          <a id="debugProbeLink" href="./?probe=1">
-            <strong>Probe</strong>
-            <small>Browser</small>
-          </a>
-        </div>
-      </div>
-
-      <p class="direct-launch" id="directLaunchWrap" hidden>
-        TV browser fallback:
-        <a id="directLaunchLink" href="https://fitperks.ai/tv">Open game link</a>
-      </p>
-
-      <p class="phone-controller-link" id="phoneControllerWrap" hidden>
-        Phone controller:
-        <a id="phoneControllerLink" href="https://fitperks.ai/join">Open on phone</a>
-      </p>
-
-      <ol class="steps" aria-label="How to play on TV">
-        <li>Open the Phone controller link on your phone.</li>
-        <li>Enter the same TV code there.</li>
-        <li>Keep phone below or in front of TV.</li>
-        <li>Follow the TV prompts: move back, move front, move left, or move right until calibration locks.</li>
-      </ol>
-
-      <p id="status" class="status" role="status" aria-live="polite">Waiting for code and game selection.</p>
     </section>
 
-    <section class="stage-panel" aria-label="Arcade stage">
-      <div class="stage-header">
-        <strong id="stageTitle">Game opens full screen after launch</strong>
-        <button type="button" id="fullscreenBtn" class="ghost">Fullscreen</button>
-      </div>
-      <div id="calibrationCoach" class="calibration-coach" hidden aria-live="polite">
-        <div class="coach-hologram" aria-hidden="true">
-          <img class="coach-runner-avatar" src="assets/runner/runner_idle.png" data-fallback-src="https://fitperks.ai/dodge-runner/assets/runner/runner_idle.png" alt="" />
+    <section id="gameView" class="game-view" aria-label="Arcade game" hidden>
+      <div class="game-panel">
+        <div class="game-panel-header">
+          <strong id="stageTitle">Motion Arcade</strong>
+          <button type="button" id="fullscreenBtn" class="ghost">Fullscreen</button>
         </div>
-        <div class="coach-copy">
-          <p class="coach-kicker">Phone Camera Calibration</p>
-          <strong id="coachTitle">Pair phone, then stand in frame</strong>
-          <span id="coachPrompt">Move back, move front, move left, or move right until the hologram turns green.</span>
-        </div>
-        <div class="coach-direction-cue" aria-hidden="true">
-          <span class="coach-direction-arrow up"></span>
-          <span class="coach-direction-arrow down"></span>
-          <span class="coach-direction-arrow left"></span>
-          <span class="coach-direction-arrow right"></span>
+        <div class="game-frame-wrap">
+          <span id="sessionBadge" class="session-badge">ID ----</span>
+          <iframe id="arcadeFrame" title="FitPerks Arcade TV" referrerpolicy="no-referrer" allow="autoplay; fullscreen" loading="eager"></iframe>
         </div>
       </div>
-      <iframe id="arcadeFrame" title="FitPerks Arcade TV" referrerpolicy="no-referrer" allow="autoplay; fullscreen" loading="eager"></iframe>
     </section>
   </main>
 
-  <script src="./script.js?v=20260918-phone-controller1"></script>
+  <script src="./script.js?v=20260918-clean-tv1"></script>
 </body>
 </html>
