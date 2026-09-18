@@ -18,8 +18,11 @@ const debugWebglLink = document.getElementById('debugWebglLink')
 const debugMinimalLink = document.getElementById('debugMinimalLink')
 const debugAvatarLink = document.getElementById('debugAvatarLink')
 const debugViewerLink = document.getElementById('debugViewerLink')
+const debugProbeLink = document.getElementById('debugProbeLink')
 const FIXED_BASE_URL = 'https://fitperks.ai'
-const DEBUG_MODE = new URLSearchParams(window.location.search).get('debug') === '1'
+const INITIAL_SEARCH_PARAMS = new URLSearchParams(window.location.search)
+const DEBUG_MODE = INITIAL_SEARCH_PARAMS.get('debug') === '1'
+const PROBE_MODE = INITIAL_SEARCH_PARAMS.get('probe') === '1'
 
 if (coachAvatar instanceof HTMLImageElement) {
   coachAvatar.addEventListener('error', () => {
@@ -165,6 +168,16 @@ function buildDodgeDebugUrl(baseUrl, code, params) {
   return url.toString()
 }
 
+function buildProbeUrl(code) {
+  const url = new URL(window.location.href)
+  url.search = ''
+  url.searchParams.set('probe', '1')
+  if (code.length === 4) {
+    url.searchParams.set('code', code)
+  }
+  return url.toString()
+}
+
 function updateDebugLinks() {
   const code = normalizeCode(tvCodeInput.value)
   const baseUrl = normalizeBaseUrl(FIXED_BASE_URL)
@@ -185,6 +198,10 @@ function updateDebugLinks() {
       link.href = buildDodgeDebugUrl(baseUrl, code, params)
     }
   })
+
+  if (debugProbeLink instanceof HTMLAnchorElement) {
+    debugProbeLink.href = buildProbeUrl(code)
+  }
 }
 
 function updateDirectLaunchLink() {
@@ -288,11 +305,14 @@ function launch() {
 }
 
 function restore() {
+  const queryCode = normalizeCode(INITIAL_SEARCH_PARAMS.get('code') || '')
   const savedCode = safeLocalStorageGet('fitperks.tv.lastCode')
   const savedGame = safeLocalStorageGet('fitperks.tv.lastGame')
 
   baseUrlInput.value = FIXED_BASE_URL
-  if (savedCode) {
+  if (queryCode) {
+    tvCodeInput.value = queryCode
+  } else if (savedCode) {
     tvCodeInput.value = normalizeCode(savedCode)
   }
   if (savedGame === 'dodge-runner' || savedGame === 'pose-wall') {
@@ -300,6 +320,72 @@ function restore() {
   }
   updateDebugLinks()
   updateDirectLaunchLink()
+}
+
+function canCreateWebGlContext() {
+  try {
+    const canvas = document.createElement('canvas')
+    return Boolean(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
+  } catch {
+    return false
+  }
+}
+
+function runTvProbe() {
+  const code = normalizeCode(tvCodeInput.value)
+  const probeUrl = buildDodgeDebugUrl(FIXED_BASE_URL, code, { tvdebug: '1', renderer: 'canvas' })
+  const probePanel = document.createElement('div')
+  probePanel.className = 'probe-panel'
+  probePanel.innerHTML = '<h2>TV Browser Probe</h2><div class="probe-lines"></div><p><a class="probe-direct-link" href="#">Open FitPerks app directly</a></p>'
+  const probeLines = probePanel.querySelector('.probe-lines')
+  const probeDirectLink = probePanel.querySelector('.probe-direct-link')
+
+  if (probeDirectLink instanceof HTMLAnchorElement) {
+    probeDirectLink.href = probeUrl
+  }
+
+  function addLine(label, value) {
+    const row = document.createElement('div')
+    row.innerHTML = `<strong>${label}</strong><span>${String(value)}</span>`
+    probeLines.appendChild(row)
+  }
+
+  stageTitle.textContent = 'TV Browser Probe'
+  statusEl.textContent = 'Running browser probe. Share a photo of the result.'
+  frame.removeAttribute('src')
+  frame.insertAdjacentElement('beforebegin', probePanel)
+
+  addLine('User agent', window.navigator.userAgent)
+  addLine('Viewport', `${window.innerWidth}x${window.innerHeight}`)
+  addLine('Screen', `${window.screen.width}x${window.screen.height}`)
+  addLine('Device pixel ratio', window.devicePixelRatio || 'n/a')
+  addLine('Online', window.navigator.onLine)
+  addLine('noModule support', 'noModule' in document.createElement('script'))
+  addLine('Promise', typeof Promise !== 'undefined')
+  addLine('fetch', typeof window.fetch !== 'undefined')
+  addLine('URLSearchParams', typeof URLSearchParams !== 'undefined')
+  addLine('WebGL available', canCreateWebGlContext())
+  addLine('Target app URL', probeUrl)
+
+  const testImage = new Image()
+  testImage.onload = () => addLine('fitperks.ai image', `loaded ${testImage.naturalWidth}x${testImage.naturalHeight}`)
+  testImage.onerror = () => addLine('fitperks.ai image', 'failed')
+  testImage.src = `${FIXED_BASE_URL}/dodge-runner/assets/runner/runner_idle.png?probe=${Date.now()}`
+
+  const testScript = document.createElement('script')
+  testScript.onload = () => addLine('fitperks.ai script', 'loaded')
+  testScript.onerror = () => addLine('fitperks.ai script', 'failed')
+  testScript.src = `${FIXED_BASE_URL}/vendor/mediapipe/pose/pose.js?probe=${Date.now()}`
+  document.head.appendChild(testScript)
+
+  const iframeTimeout = window.setTimeout(() => {
+    addLine('iframe app load', 'no load event after 8s')
+  }, 8000)
+  frame.addEventListener('load', () => {
+    window.clearTimeout(iframeTimeout)
+    addLine('iframe app load', 'load event fired')
+  }, { once: true })
+  frame.src = probeUrl
 }
 
 form.addEventListener('submit', (event) => {
@@ -403,3 +489,7 @@ window.addEventListener('message', (event) => {
 })
 
 restore()
+
+if (PROBE_MODE) {
+  runTvProbe()
+}

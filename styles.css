@@ -230,6 +230,68 @@ button.ghost {
   text-decoration: none;
 }
 
+.probe-panel {
+  position: absolute;
+  inset: 4.25rem 1rem 1rem;
+  z-index: 4;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 0.85rem;
+  padding: 1rem;
+  overflow: auto;
+  border: 1px solid rgba(103, 232, 249, 0.42);
+  border-radius: 14px;
+  background: rgba(6, 19, 37, 0.96);
+  color: var(--ink-strong);
+}
+
+.probe-panel h2 {
+  margin: 0;
+  color: var(--warn);
+  font-size: 1.35rem;
+}
+
+.probe-lines {
+  display: grid;
+  gap: 0.45rem;
+  align-content: start;
+}
+
+.probe-lines div {
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.32fr) minmax(0, 1fr);
+  gap: 0.6rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid rgba(42, 77, 115, 0.72);
+  border-radius: 10px;
+  background: rgba(16, 44, 78, 0.72);
+}
+
+.probe-lines strong {
+  color: var(--accent);
+}
+
+.probe-lines span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.probe-panel p {
+  margin: 0;
+}
+
+.probe-direct-link {
+  display: block;
+  padding: 0.75rem;
+  border: 1px solid var(--accent-strong);
+  border-radius: 10px;
+  color: #02243d;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 900;
+  background: linear-gradient(180deg, var(--accent), var(--accent-strong));
+}
+
 .stage-panel {
   position: relative;
   display: grid;
