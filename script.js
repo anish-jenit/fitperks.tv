@@ -13,6 +13,8 @@ const coachPrompt = document.getElementById('coachPrompt')
 const coachAvatar = document.querySelector('.coach-runner-avatar')
 const directLaunchWrap = document.getElementById('directLaunchWrap')
 const directLaunchLink = document.getElementById('directLaunchLink')
+const phoneControllerWrap = document.getElementById('phoneControllerWrap')
+const phoneControllerLink = document.getElementById('phoneControllerLink')
 const debugShortcuts = document.getElementById('debugShortcuts')
 const debugCanvasLink = document.getElementById('debugCanvasLink')
 const debugWebglLink = document.getElementById('debugWebglLink')
@@ -163,6 +165,14 @@ function buildTargetUrl(baseUrl, game, code) {
   return url.toString()
 }
 
+function buildPhoneControllerUrl(baseUrl, code) {
+  const url = new URL('/join', baseUrl)
+  if (code.length === 4) {
+    url.searchParams.set('code', code)
+  }
+  return url.toString()
+}
+
 function buildDodgeDebugUrl(baseUrl, code, params) {
   const url = new URL('/tv', baseUrl)
   if (code.length === 4) {
@@ -220,6 +230,18 @@ function updateDirectLaunchLink() {
   const game = gameSelect.value
   const baseUrl = normalizeBaseUrl(FIXED_BASE_URL)
   updateDebugLinks()
+
+  if (phoneControllerLink instanceof HTMLAnchorElement && phoneControllerWrap) {
+    if (baseUrl && code.length === 4) {
+      const phoneUrl = buildPhoneControllerUrl(baseUrl, code)
+      phoneControllerLink.href = phoneUrl
+      phoneControllerLink.textContent = phoneUrl
+      phoneControllerWrap.hidden = false
+    } else {
+      phoneControllerWrap.hidden = true
+    }
+  }
+
   if (!baseUrl || code.length !== 4 || !(directLaunchLink instanceof HTMLAnchorElement)) {
     if (directLaunchWrap) {
       directLaunchWrap.hidden = true

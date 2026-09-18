@@ -207,7 +207,8 @@ button.ghost {
   font-weight: 700;
 }
 
-.direct-launch {
+.direct-launch,
+.phone-controller-link {
   margin: 0;
   display: grid;
   gap: 0.45rem;
@@ -219,11 +220,18 @@ button.ghost {
   font-weight: 800;
 }
 
-.direct-launch[hidden] {
-  display: none;
+.phone-controller-link {
+  border-color: rgba(250, 204, 21, 0.48);
+  background: rgba(51, 39, 12, 0.72);
 }
 
-.direct-launch a {
+.direct-launch[hidden],
+.phone-controller-link[hidden] {
+  display: none !important;
+}
+
+.direct-launch a,
+.phone-controller-link a {
   display: block;
   overflow-wrap: anywhere;
   color: #02243d;
