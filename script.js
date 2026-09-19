@@ -4,8 +4,6 @@ const tvCodeInput = document.getElementById('tvCode')
 const gameInput = document.getElementById('game')
 const frame = document.getElementById('arcadeFrame')
 const statusEl = document.getElementById('status')
-const stageTitle = document.getElementById('stageTitle')
-const fullscreenBtn = document.getElementById('fullscreenBtn')
 const homeBtn = document.getElementById('homeBtn')
 const setupView = document.getElementById('setupView')
 const gameView = document.getElementById('gameView')
@@ -42,8 +40,8 @@ function showSetup() {
   setupView.hidden = false
   gameView.hidden = true
   homeBtn.hidden = true
+  sessionBadge.hidden = true
   frame.removeAttribute('src')
-  stageTitle.textContent = 'Motion Arcade'
   sessionBadge.textContent = 'ID ----'
   statusEl.textContent = 'Waiting for Game ID.'
   window.history.replaceState(null, '', './')
@@ -55,6 +53,7 @@ function showGame(code, game = 'dodge-runner') {
     setupView.hidden = false
     gameView.hidden = true
     homeBtn.hidden = true
+    sessionBadge.hidden = true
     statusEl.textContent = 'Enter a valid 4-character Game ID.'
     return
   }
@@ -66,7 +65,7 @@ function showGame(code, game = 'dodge-runner') {
   setupView.hidden = true
   gameView.hidden = false
   homeBtn.hidden = false
-  stageTitle.textContent = game === 'pose-wall' ? 'Pose Wall' : 'Dodge Runner'
+  sessionBadge.hidden = false
   sessionBadge.textContent = `ID ${normalizedCode}`
   frame.src = targetUrl
   window.history.replaceState(null, '', `./?code=${encodeURIComponent(normalizedCode)}`)
@@ -85,13 +84,6 @@ tvCodeInput.addEventListener('input', () => {
 })
 
 homeBtn.addEventListener('click', showSetup)
-
-fullscreenBtn.addEventListener('click', () => {
-  const target = document.querySelector('.game-frame-wrap')
-  if (target?.requestFullscreen) {
-    void target.requestFullscreen()
-  }
-})
 
 const initialCode = normalizeCode(INITIAL_SEARCH_PARAMS.get('code') || '')
 if (initialCode.length === 4) {

@@ -5,13 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Cache-Control" content="no-store" />
   <title>FitPerks TV</title>
-  <link rel="stylesheet" href="./styles.css?v=20260919-fullscreen-tv1" />
+  <link rel="stylesheet" href="./styles.css?v=20260919-clean-header1" />
 </head>
 <body>
   <main class="tv-shell">
     <header class="tv-header">
       <a class="brand" href="./" aria-label="FitPerks TV home">FitPerks TV</a>
-      <button type="button" id="homeBtn" class="ghost" hidden>Home</button>
+      <div class="header-actions">
+        <span id="sessionBadge" class="session-badge" hidden>ID ----</span>
+        <button type="button" id="homeBtn" class="ghost" hidden>Home</button>
+      </div>
     </header>
 
     <section id="setupView" class="setup-view" aria-label="TV setup">
@@ -40,18 +43,13 @@
 
     <section id="gameView" class="game-view" aria-label="Arcade game" hidden>
       <div class="game-panel">
-        <div class="game-panel-header">
-          <strong id="stageTitle">Motion Arcade</strong>
-          <button type="button" id="fullscreenBtn" class="ghost">Fullscreen</button>
-        </div>
         <div class="game-frame-wrap">
-          <span id="sessionBadge" class="session-badge">ID ----</span>
           <iframe id="arcadeFrame" title="FitPerks Arcade TV" referrerpolicy="no-referrer" allow="autoplay; fullscreen" loading="eager"></iframe>
         </div>
       </div>
     </section>
   </main>
 
-  <script src="./script.js?v=20260919-fullscreen-tv1"></script>
+  <script src="./script.js?v=20260919-clean-header1"></script>
 </body>
 </html>
