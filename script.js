@@ -11,6 +11,7 @@ const sessionBadge = document.getElementById('sessionBadge')
 
 const FIXED_BASE_URL = 'https://fitperks.ai'
 const INITIAL_SEARCH_PARAMS = new URLSearchParams(window.location.search)
+let autoLaunchCode = ''
 
 function normalizeCode(value) {
   return value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 4)
@@ -37,6 +38,7 @@ function buildTargetUrl(baseUrl, game, code) {
 }
 
 function showSetup() {
+  autoLaunchCode = ''
   setupView.hidden = false
   gameView.hidden = true
   homeBtn.hidden = true
@@ -80,7 +82,13 @@ form.addEventListener('submit', (event) => {
 
 tvCodeInput.addEventListener('input', () => {
   tvCodeInput.value = normalizeCode(tvCodeInput.value)
-  statusEl.textContent = tvCodeInput.value.length === 4 ? 'Ready to play on TV.' : 'Enter the 4-character Game ID.'
+  const code = tvCodeInput.value
+  statusEl.textContent = code.length === 4 ? 'Opening game on TV...' : 'Enter the 4-character Game ID.'
+
+  if (code.length === 4 && code !== autoLaunchCode) {
+    autoLaunchCode = code
+    showGame(code, gameInput.value || 'dodge-runner')
+  }
 })
 
 homeBtn.addEventListener('click', showSetup)
